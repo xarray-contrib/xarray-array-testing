@@ -7,3 +7,6 @@ dependencies:
   - pre-commit
   - pytest
   - pytest-reportlog
+  - hypothesis
+  - xarray
+  - numpy
