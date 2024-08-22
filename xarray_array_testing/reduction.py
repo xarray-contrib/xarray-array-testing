@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import hypothesis.strategies as st
 import xarray.testing.strategies as xrst
-from hypothesis import given, settings, HealthCheck, note
+from hypothesis import HealthCheck, given, note, settings
 
 from xarray_array_testing.base import DuckArrayTestMixin
 
