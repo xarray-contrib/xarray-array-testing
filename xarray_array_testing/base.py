@@ -3,6 +3,7 @@ from abc import ABC
 from types import ModuleType
 
 import numpy.testing as npt
+from xarray.namedarray._typing import duckarray
 
 
 class DuckArrayTestMixin(ABC):
@@ -13,7 +14,7 @@ class DuckArrayTestMixin(ABC):
 
     @property
     @abc.abstractmethod
-    def array_type(self) -> type:
+    def array_type(self) -> type[duckarray]:
         pass
 
     @staticmethod

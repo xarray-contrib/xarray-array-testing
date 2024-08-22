@@ -1,3 +1,5 @@
+from types import ModuleType
+
 import hypothesis.strategies as st
 import numpy as np
 
@@ -12,11 +14,11 @@ def create_numpy_array(*, shape, dtype):
 
 class NumpyTestMixin(DuckArrayTestMixin):
     @property
-    def xp(self):
+    def xp(self) -> ModuleType:
         return np
 
     @property
-    def array_type(self):
+    def array_type(self) -> type[np.ndarray]:
         return np.ndarray
 
     @staticmethod
