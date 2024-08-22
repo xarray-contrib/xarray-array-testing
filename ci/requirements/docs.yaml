@@ -1,0 +1,8 @@
+name: xarray-array-testing-docs
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - sphinx>=4
+  - sphinx-book-theme
+  - ipython

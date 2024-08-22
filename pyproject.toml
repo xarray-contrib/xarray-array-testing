@@ -1,0 +1,62 @@
+[project]
+name = "xarray-array-testing"
+requires-python = ">= 3.12"
+license = {text = "Apache-2.0"}
+dependencies = []
+dynamic = ["version"]
+
+[build-system]
+requires = ["setuptools>=64.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["xarray_array_testing"]
+
+[tool.setuptools_scm]
+fallback_version = "9999"
+
+[tool.ruff]
+builtins = ["ellipsis"]
+exclude = [
+    ".git",
+    ".eggs",
+    "build",
+    "dist",
+    "__pycache__",
+    "docs",
+]
+target-version = "py312"
+
+extend-include = ["*.ipynb"]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    # isort
+    "I",
+    # Pyupgrade
+    "UP",
+    # tidy imports
+    "TID",
+]
+ignore = [
+    "E402", # E402: module level import not at top of file
+    "E501", # E501: line too long - let black worry about that
+    "E731", # E731: do not assign a lambda expression, use a def
+]
+fixable = ["I"]
+extend-safe-fixes = [
+    "TID252",  # absolute imports
+]
+
+
+[tool.ruff.lint.isort]
+known-first-party = ["xarray_array_testing"]
+known-third-party = []
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
