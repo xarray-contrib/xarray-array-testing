@@ -11,7 +11,6 @@ def create_numpy_array(*, shape, dtype):
 
 class TestCreationNumpy(CreationTests):
     array_type = np.ndarray
-    array_module = np
 
     @staticmethod
     def array_strategy_fn(*, shape, dtype):
