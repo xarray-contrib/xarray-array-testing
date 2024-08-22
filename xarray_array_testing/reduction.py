@@ -1,23 +1,13 @@
 from contextlib import nullcontext
-from types import ModuleType
 
 import hypothesis.strategies as st
-import numpy as np
 import xarray.testing.strategies as xrst
 from hypothesis import given
 
+from xarray_array_testing.base import DuckArrayTestMixin
 
-class ReductionTests:
-    xp: ModuleType
 
-    @staticmethod
-    def array_strategy_fn(*, shape, dtype):
-        raise NotImplementedError
-
-    @staticmethod
-    def assert_equal(a, b):
-        np.testing.assert_allclose(a, b)
-
+class ReductionTests(DuckArrayTestMixin):
     @staticmethod
     def expected_errors(op, **parameters):
         return nullcontext()
