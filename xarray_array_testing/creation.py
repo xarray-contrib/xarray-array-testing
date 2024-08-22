@@ -1,11 +1,12 @@
 import hypothesis.strategies as st
 import xarray.testing.strategies as xrst
-from hypothesis import given
+from hypothesis import given, settings, HealthCheck
 
 from xarray_array_testing.base import DuckArrayTestMixin
 
 
 class CreationTests(DuckArrayTestMixin):
+    @settings(suppress_health_check=[HealthCheck.differing_executors])
     @given(st.data())
     def test_create_variable(self, data):
         variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
