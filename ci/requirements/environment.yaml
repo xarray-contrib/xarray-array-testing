@@ -2,11 +2,11 @@ name: xarray-array-testing-tests
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
   - ipython
   - pre-commit
   - pytest
   - pytest-reportlog
+  - pytest-cov
   - hypothesis
   - xarray
   - numpy
