@@ -1,8 +1,7 @@
 from contextlib import nullcontext
 
-import pytest
-
 import hypothesis.strategies as st
+import pytest
 import xarray.testing.strategies as xrst
 from hypothesis import given
 
