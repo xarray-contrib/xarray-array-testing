@@ -5,6 +5,7 @@ import numpy as np
 
 from xarray_array_testing.base import DuckArrayTestMixin
 from xarray_array_testing.creation import CreationTests
+from xarray_array_testing.decorator import initialize_tests
 from xarray_array_testing.reduction import ReductionTests
 
 
@@ -26,9 +27,11 @@ class NumpyTestMixin(DuckArrayTestMixin):
         return create_numpy_array(shape=shape, dtype=dtype)
 
 
+@initialize_tests
 class TestCreationNumpy(CreationTests, NumpyTestMixin):
     pass
 
 
+@initialize_tests
 class TestReductionNumpy(ReductionTests, NumpyTestMixin):
     pass
