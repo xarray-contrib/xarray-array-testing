@@ -15,7 +15,7 @@ class ReductionTests(DuckArrayTestMixin):
 
     @pytest.mark.parametrize("op", ["mean", "sum", "prod", "std", "var"])
     @given(st.data())
-    def test_variable_mean(self, op, data):
+    def test_variable(self, op, data):
         variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
 
         with self.expected_errors(op, variable=variable):
