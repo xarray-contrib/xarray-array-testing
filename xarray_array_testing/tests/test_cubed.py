@@ -78,6 +78,10 @@ class TestReductionCubed(ReductionTests, CubedTestMixin):
             return pytest.raises(
                 TypeError, match="Only real floating-point dtypes are allowed in mean"
             )
+        elif xp.isdtype(var.dtype, np.dtype("float16")):
+            return pytest.raises(
+                TypeError, match="Only numeric dtypes are allowed in isnan"
+            )
         elif op in {"var", "std"}:
             pytest.skip(reason=f"cubed does not implement {op} yet")
         else:
