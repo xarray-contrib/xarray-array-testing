@@ -1,5 +1,4 @@
-from contextlib import nullcontext
-from typing import ContextManager
+from contextlib import ContextManager, nullcontext
 
 import cubed
 import cubed.random
