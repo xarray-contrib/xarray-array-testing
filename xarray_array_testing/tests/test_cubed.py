@@ -66,14 +66,14 @@ class TestReductionCubed(ReductionTests, CubedTestMixin):
     def expected_errors(op, **parameters) -> ContextManager:
         var = parameters.get("variable")
 
+        xp = cubed.array_api
+
         note(f"op = {op}")
         note(f"dtype = {var.dtype}")
         note(f"is_integer = {cubed.array_api.isdtype(var.dtype, 'integral')}")
 
-        if (
-            op == "mean"
-            and cubed.array_api.isdtype(var.dtype, "integral")
-            or var.dtype == np.dtype("float16")
+        if op == "mean" and xp.isdtype(
+            var.dtype, ("integral", "complex floating", np.dtype("float16"))
         ):
             return pytest.raises(
                 TypeError, match="Only real floating-point dtypes are allowed in mean"
