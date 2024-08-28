@@ -1,4 +1,5 @@
-from contextlib import ContextManager, nullcontext
+from contextlib import AbstractContextManager as ContextManager
+from contextlib import nullcontext
 
 import cubed
 import cubed.random
