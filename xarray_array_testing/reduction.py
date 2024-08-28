@@ -25,3 +25,17 @@ class ReductionTests(DuckArrayTestMixin):
             expected = getattr(self.xp, op)(variable.data)
 
         self.assert_equal(actual, expected)
+
+    @pytest.mark.parametrize("op", ["all", "any"])
+    @given(st.data())
+    def test_variable_boolean_reduce(self, op, data):
+        variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
+
+        with self.expected_errors(op, variable=variable):
+            # compute using xr.Variable.<OP>()
+            actual = getattr(variable, op)().data
+            # compute using xp.<OP>(array)
+            expected = getattr(self.xp, op)(variable.data)
+
+        assert isinstance(actual, self.array_type)
+        self.assert_equal(actual, expected)
