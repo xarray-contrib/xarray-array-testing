@@ -22,7 +22,7 @@ class ReductionTests(DuckArrayTestMixin):
 
         note(f"note: {variable}")
 
-        with self.expected_errors("mean", variable=variable):
+        with self.expected_errors(op, variable=variable):
             # compute using xr.Variable.<OP>()
             actual = getattr(variable, op)().data
             # compute using xp.<OP>(array)
