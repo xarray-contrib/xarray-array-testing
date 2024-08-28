@@ -28,5 +28,7 @@ class ReductionTests(DuckArrayTestMixin):
             # compute using xp.<OP>(array)
             expected = getattr(self.xp, op)(variable.data)
 
-            assert isinstance(actual, self.array_type), type(actual)
+            assert isinstance(
+                actual, self.array_type
+            ), f"expected {self.array_type} but got {type(actual)}"
             self.assert_equal(actual, expected)
