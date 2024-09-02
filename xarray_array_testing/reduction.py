@@ -67,3 +67,18 @@ class ReductionTests(DuckArrayTestMixin):
 
         assert isinstance(actual, self.array_type)
         self.assert_equal(actual, expected)
+
+    @pytest.mark.parametrize("op", ["cumsum", "cumprod"])
+    @given(st.data())
+    def test_variable_cumulative_reduce(self, op, data):
+        array_api_names = {"cumsum": "cumulative_sum", "cumprod": "cumulative_prod"}
+        variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
+
+        with self.expected_errors(op, variable=variable):
+            # compute using xr.Variable.<OP>()
+            actual = getattr(variable, op)().data
+            # compute using xp.<OP>(array)
+            expected = getattr(self.xp, array_api_names[op])(variable.data)
+
+        assert isinstance(actual, self.array_type)
+        self.assert_equal(actual, expected)
