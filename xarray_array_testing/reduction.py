@@ -68,7 +68,16 @@ class ReductionTests(DuckArrayTestMixin):
         assert isinstance(actual, self.array_type)
         self.assert_equal(actual, expected)
 
-    @pytest.mark.parametrize("op", ["cumsum", "cumprod"])
+    @pytest.mark.parametrize(
+        "op",
+        [
+            "cumsum",
+            pytest.param(
+                "cumprod",
+                marks=pytest.mark.skip(reason="not yet included in the array api"),
+            ),
+        ],
+    )
     @given(st.data())
     def test_variable_cumulative_reduce(self, op, data):
         array_api_names = {"cumsum": "cumulative_sum", "cumprod": "cumulative_prod"}
