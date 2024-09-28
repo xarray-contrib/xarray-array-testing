@@ -9,4 +9,4 @@ dependencies:
   - pytest-cov
   - hypothesis
   - xarray
-  - numpy
+  - numpy<2.1
