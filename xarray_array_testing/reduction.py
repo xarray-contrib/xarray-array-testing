@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 
 import hypothesis.strategies as st
+import numpy as np
 import pytest
 import xarray.testing.strategies as xrst
 from hypothesis import given
@@ -61,11 +62,13 @@ class ReductionTests(DuckArrayTestMixin):
 
         with self.expected_errors(op, variable=variable):
             # compute using xr.Variable.<OP>()
-            actual = getattr(variable, op)().data
-            # compute using xp.<OP>(array)
-            expected = getattr(self.xp, op)(variable.data)
+            actual = {k: v.item() for k, v in getattr(variable, op)(dim=...).items()}
 
-        assert isinstance(actual, self.array_type)
+            # compute using xp.<OP>(array)
+            index = getattr(self.xp, op)(variable.data)
+            unraveled = np.unravel_index(index, variable.shape)
+            expected = dict(zip(variable.dims, unraveled))
+
         self.assert_equal(actual, expected)
 
     @pytest.mark.parametrize(
