@@ -87,7 +87,10 @@ class ReductionTests(DuckArrayTestMixin):
             # compute using xr.Variable.<OP>()
             actual = getattr(variable, op)().data
             # compute using xp.<OP>(array)
-            expected = getattr(self.xp, array_api_names[op])(variable.data)
+            # Variable implements n-d cumulative ops by iterating over dims
+            expected = variable.data
+            for axis in range(variable.ndim):
+                expected = getattr(self.xp, array_api_names[op])(expected, axis=axis)
 
         assert isinstance(actual, self.array_type)
         self.assert_equal(actual, expected)
