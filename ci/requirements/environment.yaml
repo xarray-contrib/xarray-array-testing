@@ -9,4 +9,7 @@ dependencies:
   - pytest-cov
   - hypothesis
   - xarray
-  - numpy<2.1
+  - numpy
+  - pip
+  - pip:
+      - -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple xarray
