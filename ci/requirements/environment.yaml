@@ -12,5 +12,5 @@ dependencies:
   - numpy
   - pip
   - pip:
-      - --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
+      - --upgrade --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
       - xarray
