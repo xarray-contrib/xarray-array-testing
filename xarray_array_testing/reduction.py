@@ -25,6 +25,7 @@ class ReductionTests(DuckArrayTestMixin):
             # compute using xp.<OP>(array)
             expected = getattr(self.xp, op)(variable.data)
 
+        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
 
     @pytest.mark.parametrize("op", ["all", "any"])
@@ -38,7 +39,7 @@ class ReductionTests(DuckArrayTestMixin):
             # compute using xp.<OP>(array)
             expected = getattr(self.xp, op)(variable.data)
 
-        assert isinstance(actual, self.array_type)
+        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
 
     @pytest.mark.parametrize("op", ["max", "min"])
@@ -52,7 +53,7 @@ class ReductionTests(DuckArrayTestMixin):
             # compute using xp.<OP>(array)
             expected = getattr(self.xp, op)(variable.data)
 
-        assert isinstance(actual, self.array_type)
+        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
 
     @pytest.mark.parametrize("op", ["argmax", "argmin"])
@@ -95,5 +96,5 @@ class ReductionTests(DuckArrayTestMixin):
             for axis in range(variable.ndim):
                 expected = getattr(self.xp, array_api_names[op])(expected, axis=axis)
 
-        assert isinstance(actual, self.array_type)
+        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
