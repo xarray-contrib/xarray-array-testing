@@ -10,7 +10,3 @@ dependencies:
   - hypothesis
   - xarray
   - numpy
-  - pip
-  - pip:
-      - --upgrade --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
-      - xarray
