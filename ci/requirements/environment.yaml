@@ -10,3 +10,5 @@ dependencies:
   - hypothesis
   - xarray
   - numpy
+  - cubed
+  - cubed-xarray
