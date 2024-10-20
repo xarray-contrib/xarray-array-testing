@@ -7,15 +7,15 @@ from hypothesis import given
 from xarray_array_testing.base import DuckArrayTestMixin
 
 
+def scalar_indexer(size):
+    return st.integers(min_value=-size, max_value=size - 1)
+
+
 @st.composite
-def scalar_indexers(draw, sizes):
-    # TODO: try to define this using builds and flatmap
-    possible_indexers = {
-        dim: st.integers(min_value=-size, max_value=size - 1)
-        for dim, size in sizes.items()
-    }
-    indexers = xrst.unique_subset_of(possible_indexers)
-    return {dim: draw(indexer) for dim, indexer in draw(indexers).items()}
+def indexers(draw, sizes, indexer_strategy_fn):
+    possible_indexers = {dim: indexer_strategy_fn(size) for dim, size in sizes.items()}
+    indexers = draw(xrst.unique_subset_of(possible_indexers))
+    return {dim: draw(indexer) for dim, indexer in indexers.items()}
 
 
 class IndexingTests(DuckArrayTestMixin):
@@ -24,16 +24,14 @@ class IndexingTests(DuckArrayTestMixin):
         return nullcontext()
 
     @given(st.data())
-    def test_variable_scalar_isel(self, data):
+    def test_variable_isel_scalars(self, data):
         variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
-        indexers = data.draw(scalar_indexers(sizes=variable.sizes))
+        idx = data.draw(indexers(variable.sizes, scalar_indexer))
 
-        with self.expected_errors("scalar_isel", variable=variable):
-            actual = variable.isel(indexers).data
+        with self.expected_errors("isel_scalars", variable=variable):
+            actual = variable.isel(idx).data
 
-            raw_indexers = {
-                dim: indexers.get(dim, slice(None)) for dim in variable.dims
-            }
+            raw_indexers = {dim: idx.get(dim, slice(None)) for dim in variable.dims}
             expected = variable.data[*raw_indexers.values()]
 
         assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
