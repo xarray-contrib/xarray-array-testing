@@ -13,6 +13,7 @@ def scalar_indexer(size):
 
 @st.composite
 def indexers(draw, sizes, indexer_strategy_fn):
+    # TODO: make use of `flatmap` and `builds` instead of `composite`
     possible_indexers = {dim: indexer_strategy_fn(size) for dim, size in sizes.items()}
     indexers = draw(xrst.unique_subset_of(possible_indexers))
     return {dim: draw(indexer) for dim, indexer in indexers.items()}
