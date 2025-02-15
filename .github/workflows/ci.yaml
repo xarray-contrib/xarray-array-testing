@@ -19,6 +19,7 @@ jobs:
     if: |
       github.repository == 'xarray-contrib/xarray-array-testing'
       && (github.event_name == 'push' || github.event_name == 'pull_request')
+      && !contains(github.event.pull_request.labels.*.name, 'skip-ci')
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
     steps:
@@ -36,6 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-ci-trigger
     if: needs.detect-ci-trigger.outputs.triggered == 'false'
+
     env:
       FORCE_COLOR: 3
       CONDA_ENV_FILE: "ci/requirements/environment.yaml"
@@ -47,7 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +65,6 @@ jobs:
           cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}"
           create-args: >-
             python=${{matrix.python-version}}
-            conda
 
       - name: Install nightly xarray
         run: |
@@ -73,23 +74,22 @@ jobs:
         run: |
           python -m pip install --no-deps -e .
 
-      - name: Version info
-        run: |
-          conda info -a
-          conda list
-
       - name: Import xarray-array-testing
         run: |
           python -c 'import xarray_array_testing'
 
       - name: Restore cached hypothesis directory
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: .hypothesis/
           key: cache-hypothesis
-          enableCrossOsArchive: true
-          save-always: true
 
       - name: Run tests
         run: |
           python -m pytest --cov=xarray_array_testing
+
+      - name: Cache hypothesis directory
+        uses: actions/cache/save@v4
+        with:
+          path: .hypothesis/
+          key: cache-hypothesis
