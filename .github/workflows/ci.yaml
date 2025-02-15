@@ -20,7 +20,11 @@ jobs:
       github.repository == 'xarray-contrib/xarray-array-testing'
       && (github.event_name == 'push' || github.event_name == 'pull_request')
     outputs:
-      triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
+      triggered: |
+        ${{
+          steps.detect-trigger.outputs.trigger-found == 'true'
+          || contains(github.event.pull_request.labels.*.name, 'skip-ci')
+        }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,9 +39,7 @@ jobs:
     name: ${{ matrix.os }} py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     needs: detect-ci-trigger
-    if: |
-      needs.detect-ci-trigger.outputs.triggered == 'false'
-      || contains(github.event.pull_request.labels.*.name, 'skip-ci')
+    if: ! needs.detect-ci-trigger.outputs.triggered
 
     env:
       FORCE_COLOR: 3
