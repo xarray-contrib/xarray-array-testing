@@ -10,4 +10,4 @@ class CreationTests(DuckArrayTestMixin):
     def test_create_variable(self, data):
         variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
 
-        assert isinstance(variable.data, self.array_type)
+        assert isinstance(variable.data, self.array_type("__init__"))
