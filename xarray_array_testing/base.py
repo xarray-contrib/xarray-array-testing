@@ -12,9 +12,8 @@ class DuckArrayTestMixin(ABC):
     def xp() -> ModuleType:
         pass
 
-    @property
-    @abc.abstractmethod
-    def array_type(self) -> type[duckarray]:
+    @staticmethod
+    def array_type(op: str) -> type[duckarray]:
         pass
 
     @staticmethod
