@@ -95,7 +95,9 @@ class IndexingTests(DuckArrayTestMixin):
             raw_indexers = {dim: idx.get(dim, slice(None)) for dim in variable.dims}
             expected = variable.data[*raw_indexers.values()]
 
-        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
+        assert isinstance(
+            actual, self.array_type("orthogonal_indexing")
+        ), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
 
     @given(st.data())
@@ -109,5 +111,7 @@ class IndexingTests(DuckArrayTestMixin):
             raw_indexers = {dim: idx.get(dim, slice(None)) for dim in variable.dims}
             expected = variable.data[*raw_indexers.values()]
 
-        assert isinstance(actual, self.array_type), f"wrong type: {type(actual)}"
+        assert isinstance(
+            actual, self.array_type("vectorized_indexing")
+        ), f"wrong type: {type(actual)}"
         self.assert_equal(actual, expected)
