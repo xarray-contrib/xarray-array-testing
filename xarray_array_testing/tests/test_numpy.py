@@ -18,8 +18,8 @@ class NumpyTestMixin(DuckArrayTestMixin):
     def xp(self) -> ModuleType:
         return np
 
-    @property
-    def array_type(self) -> type[np.ndarray]:
+    @staticmethod
+    def array_type(op: str) -> type[np.ndarray]:
         return np.ndarray
 
     @staticmethod
