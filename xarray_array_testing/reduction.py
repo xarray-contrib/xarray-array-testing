@@ -4,7 +4,6 @@ from contextlib import nullcontext
 import hypothesis.strategies as st
 import numpy as np
 import pytest
-import xarray as xr
 import xarray.testing.strategies as xrst
 from hypothesis import given, note
 
@@ -73,52 +72,52 @@ class ReductionTests(DuckArrayTestMixin):
         with self.expected_errors(op, variable=variable):
             # compute using xr.Variable.<OP>()
             actual = getattr(variable, op)(dim=dim)
+            if dim is ... or isinstance(dim, list):
+                actual_ = {dim_: var.data for dim_, var in actual.items()}
+            else:
+                actual_ = actual.data
 
             if dim is not ... and not isinstance(dim, list):
                 # compute using xp.<OP>(array)
                 note(dim)
                 axis = variable.get_axis_num(dim)
-                expected = getattr(self.xp, op)(variable.data, axis=axis)
-                self.assert_equal(actual.data, expected)
+                indices = getattr(self.xp, op)(variable.data, axis=axis)
+
+                expected = self.xp.asarray(indices)
             elif dim is ... or len(dim) == len(variable.dims):
                 # compute using xp.<OP>(array)
                 index = getattr(self.xp, op)(variable.data)
 
                 unraveled = np.unravel_index(index, variable.shape)
-                expected = dict(zip(variable.dims, unraveled))
+                expected = {
+                    k: self.xp.asarray(v) for k, v in zip(variable.dims, unraveled)
+                }
+            elif len(dim) == 1:
+                dim_ = dim[0]
+                axis = variable.get_axis_num(dim_)
+                index = getattr(self.xp, op)(variable.data, axis=axis)
 
-                # all elements are 0D
-                assert actual == expected
+                expected = {dim_: self.xp.asarray(index)}
             else:
-                if len(dim) == 1:
-                    dim_ = dim[0]
-                    axis = variable.get_axis_num(dim_)
-                    index = getattr(self.xp, op)(variable.data, axis=axis)
+                # move the relevant dims together and flatten
+                dim_name = object()
+                stacked = variable.stack({dim_name: dim})
 
-                    result_dims = [d for d in variable.dims if d != dim_]
-                    expected = {dim_: xr.Variable(result_dims, index)}
-                else:
-                    # move the relevant dims together and flatten
-                    dim_name = object()
-                    stacked = variable.stack({dim_name: dim})
+                reduce_shape = tuple(variable.sizes[d] for d in dim)
+                index = getattr(self.xp, op)(stacked.data, axis=-1)
 
-                    result_dims = stacked.dims[:-1]
-                    reduce_shape = tuple(variable.sizes[d] for d in dim)
-                    index = getattr(self.xp, op)(stacked.data, axis=-1)
+                unravelled = np.unravel_index(index, reduce_shape)
 
-                    unravelled = np.unravel_index(index, reduce_shape)
+                expected = {
+                    d: self.xp.asarray(idx)
+                    for d, idx in zip(dim, unravelled, strict=True)
+                }
 
-                    expected = {
-                        d: xr.Variable(result_dims, idx)
-                        for d, idx in zip(dim, unravelled, strict=True)
-                    }
+            note(f"original: {variable}")
+            note(f"actual: {repr(actual_)}")
+            note(f"expected: {repr(expected)}")
 
-                note(f"original: {variable}")
-                note(f"actual: {actual}")
-                note(f"expected: {expected}")
-
-                assert actual.keys() == expected.keys(), "Reduction dims are not equal"
-                assert all(actual[k].equals(expected[k]) for k in actual)
+            self.assert_dimension_indexers_equal(actual_, expected)
 
     @pytest.mark.parametrize(
         "op",
