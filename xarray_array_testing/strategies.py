@@ -1,11 +1,11 @@
 from collections.abc import Hashable
 from itertools import compress
 
-import hypothesis.extras.numpy as npst
+import hypothesis.extra.numpy as npst
 import hypothesis.strategies as st
 import numpy as np
 import xarray as xr
-from xr.testing.strategies import unique_subset_of
+from xarray.testing.strategies import unique_subset_of
 
 
 def _basic_indexers(size):
