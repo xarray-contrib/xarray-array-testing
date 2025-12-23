@@ -177,7 +177,7 @@ def vectorized_indexers(
     max_ndim: int = 3,
     min_size: int = 1,
     max_size: int = 5,
-) -> dict[Hashable, xr.DataArray]:
+) -> dict[Hashable, xr.Variable]:
     """Generate vectorized (fancy) indexers where all arrays are broadcastable.
 
     In vectorized indexing, all array indexers must have compatible shapes
@@ -206,7 +206,7 @@ def vectorized_indexers(
 
     Returns
     -------
-    sizes : mapping of hashable to DataArray or Variable
+    sizes : mapping of hashable to Variable
         Indexers as a dict with keys randomly selected from sizes.keys().
         Values are DataArrays of integer indices that are all broadcastable
         to a common shape.
