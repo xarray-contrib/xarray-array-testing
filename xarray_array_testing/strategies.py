@@ -8,6 +8,21 @@ import xarray as xr
 from xr.testing.strategies import unique_subset_of
 
 
+def _basic_indexers(size):
+    return st.one_of(
+        st.integers(min_value=-size, max_value=size - 1),
+        st.slices(size),
+    )
+
+
+def _outer_array_indexers(size, max_size):
+    return npst.arrays(
+        dtype=np.int64,
+        shape=st.integers(min_value=1, max_value=min(size, max_size)),
+        elements=st.integers(min_value=-size, max_value=size - 1),
+    )
+
+
 # vendored from `xarray`, should be included in `xarray>=2026.01.0`
 @st.composite
 def basic_indexers(
@@ -99,6 +114,29 @@ def outer_array_indexers(
         for dim, size in selected_dims.items()
     }
     return idxr
+
+
+@st.composite
+def orthogonal_indexers(
+    draw,
+    /,
+    *,
+    sizes: dict[Hashable, int],
+    min_dims: int = 2,
+    max_dims: int | None = None,
+    max_size: int = 10,
+) -> dict[Hashable, int | slice | np.ndarray]:
+    selected_dims = draw(unique_subset_of(sizes, min_size=min_dims, max_size=max_dims))
+
+    return {
+        dim: draw(
+            st.one_of(
+                _basic_indexers(size),
+                _outer_array_indexers(size, max_size),
+            )
+        )
+        for dim, size in selected_dims.items()
+    }
 
 
 @st.composite
