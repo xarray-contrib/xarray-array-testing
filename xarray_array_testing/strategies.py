@@ -126,6 +126,32 @@ def orthogonal_indexers(
     max_dims: int | None = None,
     max_size: int = 10,
 ) -> dict[Hashable, int | slice | np.ndarray]:
+    """Generate orthogonal indexers (vectorized/orthogonal indexing).
+
+    Parameters
+    ----------
+    draw : callable
+        The Hypothesis draw function (automatically provided by @st.composite).
+    sizes : dict[Hashable, int]
+        Dictionary mapping dimension names to their sizes.
+    min_dims : int, optional
+        Minimum number of dimensions to index
+    max_dims : int or None, optional
+        Maximum number of dimensions to index
+    max_size : int, optional
+        Maximum size of array indexers
+
+    Returns
+    -------
+    sizes : mapping of hashable to indexer
+        Indexers as a dict with keys randomly selected from ``sizes.keys()``.
+        Values are integers, slices, or 1D numpy arrays of integer indices for
+        each dimension.
+
+    See Also
+    --------
+    hypothesis.extra.numpy.arrays
+    """
     selected_dims = draw(unique_subset_of(sizes, min_size=min_dims, max_size=max_dims))
 
     return {
