@@ -77,9 +77,9 @@ class ReductionTests(DuckArrayTestMixin):
             else:
                 actual_ = actual.data
 
+            note(f"dim: {dim}")
             if dim is not ... and not isinstance(dim, list):
                 # compute using xp.<OP>(array)
-                note(dim)
                 axis = variable.get_axis_num(dim)
                 indices = getattr(self.xp, op)(variable.data, axis=axis)
 
