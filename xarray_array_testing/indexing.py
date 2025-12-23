@@ -45,9 +45,7 @@ class IndexingTests(DuckArrayTestMixin):
     @given(st.data())
     def test_variable_isel_orthogonal(self, data):
         variable = data.draw(xrst.variables(array_strategy_fn=self.array_strategy_fn))
-        idx = data.draw(
-            orthogonal_indexers(sizes=variable.sizes, min_dims=len(variable.dims))
-        )
+        idx = data.draw(orthogonal_indexers(sizes=variable.sizes, min_dims=1))
 
         with self.expected_errors("isel_orthogonal", variable=variable, indexers=idx):
             actual = variable.isel(idx).data
